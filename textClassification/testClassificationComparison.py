@@ -194,31 +194,6 @@ def trainModelAndPrintAccuracy(currectModelDescr):
     print('Accuracy: {0:f}'.format(score))
 
 
-def classifyGivenText(currectModelDescr, text):
-    global n_words
-    # Downloads, unpacks and reads DBpedia dataset.
-    # dbpedia = learn.datasets.load_dataset('dbpedia')
-    X_train, y_train = loadData(currectModelDescr['trainingPath'])
-    ### Process vocabulary
-    vocab_processor = learn.preprocessing.VocabularyProcessor(MAX_DOCUMENT_LENGTH)
-    X_train = np.array(list(vocab_processor.fit_transform(X_train)))
-    n_words = len(vocab_processor.vocabulary_)
-
-    classifier = learn.Estimator(model_fn=currectModelDescr['model'],
-                                 model_dir=currectModelDescr['modelPath'])
-
-    ## todo ugly way to restore model!!! no need to pass training set. need to pass empty
-    classifier.fit(X_train, y_train, steps=0)
-
-
-    # np.array(data, dtype=np.str)
-    textForClassification = np.array(list(vocab_processor.transform(np.array([text], dtype=np.str))))
-    y_predicted = [p['class'] for p in classifier.predict(textForClassification, as_iterable=True)]
-
-    print (y_predicted)
-
-#---PLEAS UPDATE-PATH!!!
-
 MODELS ={
     'bagOfWords' : { 'trainingPath' : '/Users/npakhomova/PycharmProjects/babyStepsInPython/textClassification/data/SMALL_MPTTraining.csv',
                      'testingPath' : '/Users/npakhomova/PycharmProjects/babyStepsInPython/textClassification/data/SMALL_MPTTesting.csv',
@@ -277,5 +252,4 @@ trainModelAndPrintAccuracy(MODELS['cnn'])
 # trainModelAndPrintAccuracy(MODELS['char_rnn'])
 # trainModelAndPrintAccuracy(MODELS['char_cnn'])
 
-# classifyGivenText(MODELS['bagOfWords'], 'alpine stars hughes hat highlight your laid back look with this stylin  hat from alpine stars')
 
